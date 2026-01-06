@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyShow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">BookMyShow</div>
+            <div class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Home</a>
+                <a href="#"><i class="fas fa-film"></i> Movies</a>
+                <a href="#" onclick="toggleLogin()"><i class="fas fa-user"></i> <span id="loginText">Login</span></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container account-section">
+        <div class="account-title">My Account</div>
+        <div class="account-info">
+            <div class="account-label">Name</div>
+            <div class="account-value" id="accountName">Guest User</div>
+        </div>
+        <div class="account-info">
+            <div class="account-label">Email</div>
+            <div class="account-value" id="accountEmail">guest@example.com</div>
+        </div>
+        <div class="account-info">
+            <div class="account-label">Wallet Balance</div>
+            <div class="account-value" id="accountBalance">₹0</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="booking-container">
+            <div class="booking-steps">
+                <!-- Step 1: Select Movie -->
+                <div class="step active" id="step1">
+                    <div class="step-title">Select Movie</div>
+                    <div class="movie-grid" id="movieGrid">
+                        <!-- Movies will be loaded here -->
+                    </div>
+                    <div class="navigation">
+                        <button class="btn btn-outline" disabled>Previous</button>
+                        <button class="btn" onclick="nextStep(1)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Select Showtime -->
+                <div class="step" id="step2">
+                    <div class="step-title">Select Showtime</div>
+                    <div class="showtime-grid" id="showtimeGrid">
+                        <!-- Showtimes will be loaded here -->
+                    </div>
+                    <div class="navigation">
+                        <button class="btn btn-outline" onclick="prevStep(2)">Previous</button>
+                        <button class="btn" onclick="nextStep(2)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Select Seats -->
+                <div class="step" id="step3">
+                    <div class="step-title">Select Seats</div>
+                    <div class="seat-map-container">
+                        <div class="screen">SCREEN</div>
+                        <div class="seat-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #e0e0e0;"></div>
+                                <span>Regular (₹300)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #ffc107;"></div>
+                                <span>VIP (₹400)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #17a2b8;"></div>
+                                <span>Recliner (₹500)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #aaa;"></div>
+                                <span>Occupied</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #f84464;"></div>
+                                <span>Selected</span>
+                            </div>
+                        </div>
+                        <div class="seat-map" id="seatMap">
+                            <!-- Seats will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="navigation">
+                        <button class="btn btn-outline" onclick="prevStep(3)">Previous</button>
+                        <button class="btn" onclick="nextStep(3)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Payment -->
+                <div class="step" id="step4">
+                    <div class="step-title">Payment</div>
+                    <div class="payment-methods">
+                        <div class="payment-card" onclick="selectPayment('credit')">
+                            <div class="payment-icon"><i class="far fa-credit-card"></i></div>
+                            <div>Credit Card</div>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment('debit')">
+                            <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                            <div>Debit Card</div>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment('paypal')">
+                            <div class="payment-icon"><i class="fab fa-paypal"></i></div>
+                            <div>PayPal</div>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment('upi')">
+                            <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                            <div>UPI</div>
+                        </div>
+                        <div class="payment-card" onclick="selectPayment('wallet')">
+                            <div class="payment-icon"><i class="fas fa-wallet"></i></div>
+                            <div id="walletOption">Wallet (₹0)</div>
+                        </div>
+                    </div>
+                    <div id="creditCardForm" style="display: none; margin-top: 20px;">
+                        <div style="margin-bottom: 15px;">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <label for="expiryDate">Expiry Date</label>
+                                <input type="text" id="expiryDate" placeholder="MM/YY" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" placeholder="123" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="cardName">Name on Card</label>
+                            <input type="text" id="cardName" placeholder="John Doe" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                    </div>
+                    <div class="navigation">
+                        <button class="btn btn-outline" onclick="prevStep(4)">Previous</button>
+                        <button class="btn" onclick="processPayment()">Pay Now</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Confirmation -->
+                <div class="step" id="step5">
+                    <div class="confirmation">
+                        <div class="confirmation-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="confirmation-title">Booking Confirmed!</div>
+                        <div class="confirmation-message">Your tickets have been successfully booked. A confirmation has been sent to your email.</div>
+                        <button class="btn" onclick="window.location.href='/'">Back to Home</button>
+                    </div>
+                    <div class="ticket-details">
+                        <h3>Ticket Details</h3>
+                        <div class="summary-item">
+                            <div class="summary-label">Movie</div>
+                            <div class="summary-value" id="confMovie"></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Showtime</div>
+                            <div class="summary-value" id="confShowtime"></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Seats</div>
+                            <div class="summary-value" id="confSeats"></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Booking ID</div>
+                            <div class="summary-value" id="confBookingId"></div>
+                        </div>
+                        <div class="total-price" id="confTotal"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="booking-summary">
+                <div class="summary-title">Booking Summary</div>
+                <div class="summary-item">
+                    <div class="summary-label">Movie</div>
+                    <div class="summary-value" id="summaryMovie">Not selected</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Showtime</div>
+                    <div class="summary-value" id="summaryShowtime">Not selected</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Seats</div>
+                    <div class="summary-value" id="summarySeats">Not selected</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Ticket Price</div>
+                    <div class="summary-value" id="summaryPrice">₹0</div>
+                </div>
+                <div class="total-price" id="summaryTotal">Total: ₹0</div>
+            </div>
+        </div>
+    </div>
+    <script src="./app.js"></script>
+</body>
+</html>
